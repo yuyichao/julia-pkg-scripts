@@ -26,3 +26,7 @@ for f in *; do
     esac
 done
 rm -rf "${dest_dir}/deps/"build.jl
+
+ver=$(julia --startup-file=no \
+            -e 'print(VERSION.major, ".", VERSION.minor, ".", VERSION.patch)')
+depends+=("julia=2:$ver")
