@@ -4,8 +4,12 @@ pkgname=$1
 
 read_soname=$(dirname "${BASH_SOURCE}")/julia-read-soname.sh
 
-names=()
+libnames=()
 libs=()
+binnames=()
+bins=()
+
+isbin=0
 
 for arg in "${@:2}"; do
     if [[ $arg =~ (.*)=(.*) ]]; then
@@ -16,38 +20,60 @@ for arg in "${@:2}"; do
         lib=$arg
     fi
     case "$lib" in
+        -b)
+            isbin=1
+            continue
+            ;;
         /*)
             if [ -f "$lib" ]; then
                 :
             elif [ -f "$lib.so" ]; then
                 lib="$lib.so"
+            elif ((isbin)); then
+                echo "Cannot find binary $lib"
+                exit 1
             else
                 echo "Cannot find library $lib"
                 exit 1
             fi
             ;;
         *)
-            if [ -f "/usr/lib/$lib" ]; then
-                lib="/usr/lib/$lib"
-            elif [ -f "/usr/lib/lib$lib" ]; then
-                lib="/usr/lib/lib$lib"
-            elif [ -f "/usr/lib/$lib.so" ]; then
-                lib="/usr/lib/$lib.so"
-            elif [ -f "/usr/lib/lib$lib.so" ]; then
-                lib="/usr/lib/lib$lib.so"
+            if ((isbin)); then
+                if ! lib=$(which "$lib" 2> /dev/null); then
+                    echo "Cannot find binary $lib"
+                    exit 1
+                fi
             else
-                echo "Cannot find library $lib"
-                exit 1
-            fi
-            soname=$($read_soname "$lib")
-            if [[ -n $soname ]]; then
-                lib=$soname
+                if [ -f "/usr/lib/$lib" ]; then
+                    lib="/usr/lib/$lib"
+                elif [ -f "/usr/lib/lib$lib" ]; then
+                    lib="/usr/lib/lib$lib"
+                elif [ -f "/usr/lib/$lib.so" ]; then
+                    lib="/usr/lib/$lib.so"
+                elif [ -f "/usr/lib/lib$lib.so" ]; then
+                    lib="/usr/lib/lib$lib.so"
+                else
+                    echo "Cannot find library $lib"
+                    exit 1
+                fi
+                soname=$($read_soname "$lib")
+                if [[ -n $soname ]]; then
+                    lib=$soname
+                fi
             fi
             ;;
     esac
-    names=("${names[@]}" "$name")
-    libs=("${libs[@]}" "$lib")
+    if ((isbin)); then
+        isbin=0
+        binnames=("${binnames[@]}" "$name")
+        bins=("${bins[@]}" "$lib")
+    else
+        libnames=("${libnames[@]}" "$name")
+        libs=("${libs[@]}" "$lib")
+    fi
 done
+
+names=("${libnames[@]}" "${binnames[@]}")
 
 gen_file() {
     echo "module $pkgname"
@@ -55,8 +81,11 @@ gen_file() {
     (IFS=','; echo "${names[*]}")
     echo "const PATH_list = String[]"
     echo "const LIBPATH_list = String[]"
-    for ((i = 0; i < ${#names[@]}; i++)); do
-        echo "const ${names[i]} = \"${libs[i]}\""
+    for ((i = 0; i < ${#libnames[@]}; i++)); do
+        echo "const ${libnames[i]} = \"${libs[i]}\""
+    done
+    for ((i = 0; i < ${#binnames[@]}; i++)); do
+        echo "${binnames[i]}(f::Function; kw...) = f(\"${bins[i]}\")"
     done
     echo "end"
 }
