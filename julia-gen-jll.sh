@@ -10,6 +10,12 @@ binnames=()
 bins=()
 
 isbin=0
+hasextra=
+
+if [[ $2 = "-e" ]]; then
+    hasextra=$3
+    shift 2
+fi
 
 for arg in "${@:2}"; do
     if [[ $arg =~ (.*)=(.*) ]]; then
@@ -87,6 +93,12 @@ gen_file() {
     for ((i = 0; i < ${#binnames[@]}; i++)); do
         echo "${binnames[i]}(f::Function; kw...) = f(\"${bins[i]}\")"
     done
+    if [[ -n $hasextra ]]; then
+        if [[ $hasextra = - ]]; then
+            hasextra=/dev/stdin
+        fi
+        cat "$hasextra"
+    fi
     echo "end"
 }
 
