@@ -27,6 +27,8 @@ for f in *; do
 done
 rm -rf "${dest_dir}/deps/"build.jl
 
-ver=$(julia --startup-file=no \
-            -e 'print(VERSION.major, ".", VERSION.minor, ".", VERSION.patch)')
-depends+=("julia=2:$ver")
+ver1=$(julia --startup-file=no \
+             -e 'print(VERSION.major, ".", VERSION.minor)')
+ver2=$(julia --startup-file=no \
+             -e 'print(VERSION.major, ".", VERSION.minor + 1)')
+depends+=("julia>=2:$ver1" "julia<2:$ver2")
