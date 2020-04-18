@@ -4,7 +4,7 @@ jlname=$1
 pkgdir=$2
 pkgname=$3
 
-site_dir=$(julia --startup-file=no -e 'print("/usr/share/julia/environments/v$(VERSION.major).$(VERSION.minor)")')
+site_dir=$(julia --startup-file=no -e "print(Sys.STDLIB)")
 dest_dir="${pkgdir}/${site_dir}/${jlname}/"
 
 install -dm755 "${dest_dir}"
