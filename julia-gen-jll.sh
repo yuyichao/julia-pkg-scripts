@@ -39,9 +39,9 @@ for arg in "${@:2}"; do
                 echo "Cannot find library $lib"
                 exit 1
             fi
+            lib=$($read_soname "$lib")
             ;;
     esac
-    lib=$($read_soname "$lib")
     names=("${names[@]}" "$name")
     libs=("${libs[@]}" "$lib")
 done
