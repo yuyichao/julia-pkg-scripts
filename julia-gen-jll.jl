@@ -85,6 +85,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         else
             file = basename(path)
         end
+        println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "$(name)_handle = C_NULL")
         if dir == "/usr/lib" || dir == "/usr/local/lib" || dir == "/usr/lib/julia"
@@ -105,6 +106,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         end
         dir = dirname(path)
         file = basename(path)
+        println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "$(name)(f::Function; kw...) = f($(name)_path)")
     end
