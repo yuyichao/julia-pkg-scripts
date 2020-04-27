@@ -55,6 +55,9 @@ end
 open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
     println(fh, "module $(pkgname)")
     println(fh, "using Libdl")
+    for dep in get(config, "depends", [])
+        println(fh, "using $(dep)")
+    end
     println(fh, "const PATH_list = String[]")
     println(fh, "const LIBPATH_list = String[]")
     println(fh, "const PATH = \"\"")
