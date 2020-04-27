@@ -93,7 +93,11 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         else
             println(fh, "const $(name) = $(repr(path))")
         end
-        println(init_func, "    global $(name)_handle = dlopen($(name)_path)")
+        if get(lib, "dlopen_global", false)
+            println(init_func, "    global $(name)_handle = dlopen($(name)_path, RTLD_LAZY | RTLD_DEEPBIND | RTLD_GLOBAL)")
+        else
+            println(init_func, "    global $(name)_handle = dlopen($(name)_path)")
+        end
     end
     for bin in get(config, "binary", [])
         name = bin["name"]
