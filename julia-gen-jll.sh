@@ -83,8 +83,10 @@ names=("${libnames[@]}" "${binnames[@]}")
 
 gen_file() {
     echo "module $pkgname"
-    echo -n "export "
-    (IFS=','; echo "${names[*]}")
+    if ((${#names[@]} != 0)); then
+        echo -n "export "
+        (IFS=','; echo "${names[*]}")
+    fi
     echo "const PATH_list = String[]"
     echo "const LIBPATH_list = String[]"
     for ((i = 0; i < ${#libnames[@]}; i++)); do
