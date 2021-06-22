@@ -34,6 +34,6 @@ ver2=$(julia --startup-file=no \
              -e 'print(VERSION.major, ".", VERSION.minor + 1)')
 depends+=("julia>=2:$ver1" "julia<2:$ver2")
 
-for deps in $(julia "$(dirname ${BASH_SOURCE})/julia-list-deps.jl"); do
+for deps in $(julia "$(dirname ${BASH_SOURCE})/julia-list-deps.jl" .); do
     depends+=("${julia_ver}-${pkg,,}")
 done
