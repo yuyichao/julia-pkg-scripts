@@ -12,7 +12,7 @@ install -dm755 "${dest_dir}"
 # This should ignore the .* files automatically
 for f in *; do
     case "$f" in
-        LICENSE*)
+        LICENSE*|License*)
             cp -a "$f" "${dest_dir}"
             install -dm755 "${pkgdir}/usr/share/licenses/$pkgname/"
             ln -sf "../../../..${site_dir}/${jlname}/$f" \
