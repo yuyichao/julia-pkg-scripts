@@ -3,6 +3,7 @@
 jlname=$1
 pkgdir=$2
 pkgname=$3
+julia_ver=${4:-julia}
 
 site_dir=$(julia --startup-file=no -e "print(Sys.STDLIB)")
 dest_dir="${pkgdir}/${site_dir}/${jlname}/"
@@ -32,3 +33,7 @@ ver1=$(julia --startup-file=no \
 ver2=$(julia --startup-file=no \
              -e 'print(VERSION.major, ".", VERSION.minor + 1)')
 depends+=("julia>=2:$ver1" "julia<2:$ver2")
+
+for deps in $(julia "${BASH_SOURCE}/julia-list-deps.jl"); do
+    depends+=("${julia_ver}-${pkg,,}")
+done
