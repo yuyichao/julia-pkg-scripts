@@ -21,6 +21,12 @@ for f in *; do
         appveyor.yml)
             true
             ;;
+        Project.toml)
+            # Strip out these two dependencies by default since we shouldn't really need them
+            # If there's really a need we'll add a flag to override this.
+            sed -i -e '/^JLLWrapper/d' -e '/^BinaryProvider/d' Project.toml
+            cp -a Project.toml "${dest_dir}"
+            ;;
         *)
             cp -a "$f" "${dest_dir}"
             ;;
