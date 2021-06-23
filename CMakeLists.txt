@@ -12,7 +12,7 @@ install(FILES gen-archcn-julia-git.jl gen-archcn-julia-git-jll.jl
   WORLD_READ WORLD_EXECUTE
   DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
-install(FILES julia-read-soname.sh julia-gen-jll.sh
+install(FILES julia-read-soname.sh
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE
   WORLD_READ WORLD_EXECUTE
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/julia/")
