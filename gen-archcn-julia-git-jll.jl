@@ -71,8 +71,7 @@ update_on:
   - source: vcs
   - alias: alpm-lilac
     alpm: julia-git
-    from_pattern: ^(\\d+\\.\\d+).*
-    to_pattern: \\1
+    provided: julia
   - source: manual
     manual: 1
 """)
