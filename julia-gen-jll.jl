@@ -60,8 +60,8 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
     end
     println(fh, "const PATH_list = String[]")
     println(fh, "const LIBPATH_list = String[]")
-    println(fh, "const PATH = \"\"")
-    println(fh, "const LIBPATH = \"\"")
+    println(fh, "const PATH = Ref(\"\")")
+    println(fh, "const LIBPATH = Ref(\"\")")
     println(fh, "const LIBPATH_env = \"LD_LIBRARY_PATH\"")
     init_func = IOBuffer()
     for lib in get(config, "library", [])
