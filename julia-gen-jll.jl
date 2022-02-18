@@ -52,6 +52,17 @@ function check_binary(name, options)
     exit(1)
 end
 
+function check_file(name, options)
+    for path in options
+        if !isfile(path)
+            continue
+        end
+        return path
+    end
+    @error "Cannot find file $(name)"
+    exit(1)
+end
+
 open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
     println(fh, "module $(pkgname)")
     println(fh, "using Libdl")
@@ -114,6 +125,20 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "$(name)(f::Function; kw...) = f($(name)_path)")
+    end
+    for f in get(config, "file", [])
+        name = bin["name"]
+        file = get(bin, "file", name)
+        if file[1] == '/'
+            # Full path
+            path = check_file(file, (file,))
+        else # Assume searching in PATH for now
+            path = check_file(file, [joinpath(P, file) for P in PATHs])
+        end
+        println(fh, "export $(name)")
+        println(fh, "const $(name)_path = $(repr(path))")
+        println(fh, "const $(name) = $(name)_path")
+        println(fh, "get_$(name)() = $(name)_path")
     end
     init_body = String(take!(init_func))
     if !isempty(init_body)
