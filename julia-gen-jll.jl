@@ -111,8 +111,6 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         else
             path = check_binary(file, [joinpath(P, file) for P in PATHs])
         end
-        dir = dirname(path)
-        file = basename(path)
         println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "$(name)(f::Function; kw...) = f($(name)_path)")
