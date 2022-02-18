@@ -127,8 +127,8 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         println(fh, "$(name)(f::Function; kw...) = f($(name)_path)")
     end
     for f in get(config, "file", [])
-        name = bin["name"]
-        file = get(bin, "file", name)
+        name = f["name"]
+        file = get(f, "file", name)
         if file[1] == '/'
             # Full path
             path = check_file(file, (file,))
