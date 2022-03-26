@@ -17,7 +17,7 @@ license=('MIT')
 makedepends=(git julia-pkg-scripts)
 depends=(julia-git)
 provides=(julia-git-$(archname))
-source=(git://github.com/JuliaBinaryWrappers/$(jlname).jl
+source=(git+https://github.com/JuliaBinaryWrappers/$(jlname).jl
         jll.toml)
 md5sums=('SKIP')
 
