@@ -40,6 +40,12 @@ ver2=$(julia --startup-file=no \
              -e 'print(VERSION.major, ".", VERSION.minor + 1)')
 depends+=("julia>=2:$ver1" "julia<2:$ver2")
 
+if [[ -n $JULIA_INSTALL_SRCPKG ]]; then
+    _deps_suffix=-src
+else
+    _deps_suffix=
+fi
+
 for deps in $(julia "$(dirname ${BASH_SOURCE})/julia-list-deps.jl" .); do
-    depends+=("${julia_ver}-${deps,,}")
+    depends+=("${julia_ver}-${deps,,}${_deps_suffix}")
 done
