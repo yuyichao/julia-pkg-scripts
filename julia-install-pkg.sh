@@ -49,3 +49,19 @@ fi
 for deps in $(julia "$(dirname ${BASH_SOURCE})/julia-list-deps.jl" .); do
     depends+=("${julia_ver}-${deps,,}${_deps_suffix}")
 done
+
+if [[ -n $JULIA_INSTALL_SRCPKG ]] && [[ -z $JULIA_INSTALL_SKIP_TIMESTAMP_FIX ]]; then
+    install=.pkg-${jlname,,}.install
+    (cd "${pkgdir}"
+
+     "$(dirname ${BASH_SOURCE})/julia-gen-timestamp-fix.sh" "${site_dir}/${jlname}/"
+
+     echo "post_install() {"
+     echo "  timestamps-fix"
+     echo "}"
+
+     echo "post_upgrade() {"
+     echo "  timestamps-fix"
+     echo "}"
+    ) > "${startdir}/$install"
+fi
