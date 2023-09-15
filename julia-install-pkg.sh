@@ -54,7 +54,7 @@ if [[ -n $JULIA_INSTALL_SRCPKG ]] && [[ -z $JULIA_INSTALL_SKIP_TIMESTAMP_FIX ]];
     install=.pkg-${jlname,,}.install
     (cd "${pkgdir}"
 
-     "$(dirname ${BASH_SOURCE})/julia-gen-timestamp-fix.sh" "${site_dir}/${jlname}/"
+     "$(dirname ${BASH_SOURCE})/julia-gen-timestamp-fix.sh" "${site_dir##/}/${jlname}/"
 
      echo "post_install() {"
      echo "  timestamps-fix"
