@@ -5,7 +5,11 @@ pkgdir=$2
 pkgname=$3
 julia_ver=${4:-julia}
 
-site_dir=$(julia --startup-file=no -e "print(Sys.STDLIB)")
+if [[ -n $JULIA_INSTALL_SRCPKG ]]; then
+    site_dir=/usr/share/julia/arch-site
+else
+    site_dir=$(julia --startup-file=no -e "print(Sys.STDLIB)")
+fi
 dest_dir="${pkgdir}/${site_dir}/${jlname}/"
 
 install -dm755 "${dest_dir}"
@@ -34,11 +38,13 @@ for f in *; do
 done
 rm -rf "${dest_dir}/deps/"build.jl
 
-ver1=$(julia --startup-file=no \
-             -e 'print(VERSION.major, ".", VERSION.minor)')
-ver2=$(julia --startup-file=no \
-             -e 'print(VERSION.major, ".", VERSION.minor + 1)')
-depends+=("julia>=2:$ver1" "julia<2:$ver2")
+if [[ -z $JULIA_INSTALL_SRCPKG ]]; then
+    ver1=$(julia --startup-file=no \
+                 -e 'print(VERSION.major, ".", VERSION.minor)')
+    ver2=$(julia --startup-file=no \
+                 -e 'print(VERSION.major, ".", VERSION.minor + 1)')
+    depends+=("julia>=2:$ver1" "julia<2:$ver2")
+fi
 
 if [[ -n $JULIA_INSTALL_SRCPKG ]]; then
     _deps_suffix=-src
