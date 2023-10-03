@@ -38,7 +38,7 @@ for f in *; do
 done
 rm -rf "${dest_dir}/deps/"build.jl
 
-if [[ -z $JULIA_INSTALL_SRCPKG ]]; then
+if [[ -z $JULIA_INSTALL_SRCPKG ]] && [[ -z $JULIA_INSTALL_FORCE_VERSION_DEP ]]; then
     ver1=$(julia --startup-file=no \
                  -e 'print(VERSION.major, ".", VERSION.minor)')
     ver2=$(julia --startup-file=no \
