@@ -71,6 +71,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
     end
     println(fh, "is_available() = true")
     println(fh, "find_artifact_dir() = \"/usr\"")
+    println(fh, "artifact_dir = \"/usr\"")
     println(fh, "const PATH_list = String[]")
     println(fh, "const LIBPATH_list = String[]")
     println(fh, "const PATH = Ref(\"\")")
