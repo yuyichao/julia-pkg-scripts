@@ -13,6 +13,7 @@ fi
 dest_dir="${pkgdir}/${site_dir}/${jlname}/"
 
 install -dm755 "${dest_dir}"
+found_project_toml=0
 # This should ignore the .* files automatically
 for f in *; do
     case "$f" in
@@ -30,6 +31,7 @@ for f in *; do
             # If there's really a need we'll add a flag to override this.
             sed -i -e '/^JLLWrapper/d' -e '/^BinaryProvider/d' Project.toml
             cp -a Project.toml "${dest_dir}"
+            found_project_toml=1
             ;;
         *)
             cp -a "$f" "${dest_dir}"
@@ -37,6 +39,11 @@ for f in *; do
     esac
 done
 rm -rf "${dest_dir}/deps/"build.jl
+
+if [[ $found_project_toml = 0 ]]; then
+    echo "Cannot find Project.toml" && false
+    return 1
+fi
 
 if [[ -z $JULIA_INSTALL_SRCPKG ]] && [[ -z $JULIA_INSTALL_FORCE_VERSION_DEP ]]; then
     ver1=$(julia --startup-file=no \
