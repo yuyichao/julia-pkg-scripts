@@ -84,7 +84,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         if file[1] == '/'
             # Full path
             path = check_library(file, (file, file * ".so"))
-        elseif '/' in file[1]
+        elseif '/' in file
             # Relative path
             path = check_library(file, (joinpath("/usr/lib", file),
                                         joinpath("/usr/lib", file * ".so")))
@@ -94,8 +94,9 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
                                         joinpath("/usr/lib", "lib" * file),
                                         joinpath("/usr/lib", "lib" * file * ".so")))
         end
+        use_soname = get(lib, "use_soname", true)
         dir = dirname(path)
-        soname = strip(read(`$read_soname $path`, String))
+        soname = use_soname ? strip(read(`$read_soname $path`, String)) : ""
         if !isempty(soname) && isfile(joinpath(dir, soname))
             path = joinpath(dir, soname)
             file = soname
