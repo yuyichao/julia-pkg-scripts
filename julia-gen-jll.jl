@@ -64,12 +64,14 @@ function check_file(name, options)
 end
 
 open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
+    global_config = get(config, "global", Dict{String,Any}())
     println(fh, "module $(pkgname)")
     println(fh, "using Libdl")
     for dep in get(config, "depends", [])
         println(fh, "using $(dep)")
     end
-    println(fh, "is_available() = true")
+    available = get(global_config, "available", true)
+    println(fh, "is_available() = $(available ? "true" : "false")")
     println(fh, "find_artifact_dir() = \"/usr\"")
     println(fh, "artifact_dir = \"/usr\"")
     println(fh, "const PATH_list = String[]")
