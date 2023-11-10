@@ -54,7 +54,7 @@ end
 
 function check_file(name, options)
     for path in options
-        if !isfile(path)
+        if !ispath(path) # ironically, file isn't required to be a file
             continue
         end
         return path
@@ -135,7 +135,9 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
     for f in get(config, "file", [])
         name = f["name"]
         file = get(f, "file", name)
-        if file[1] == '/'
+        if get(f, "literal", false)
+            path = file
+        elseif file[1] == '/'
             # Full path
             path = check_file(file, (file,))
         else # Assume searching in PATH for now
