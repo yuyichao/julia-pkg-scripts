@@ -131,6 +131,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "$(name)(f::Function; kw...) = f($(name)_path)")
+        println(fh, "$(name)(; kw...) = Cmd($(name)_path)")
     end
     for f in get(config, "file", [])
         name = f["name"]
