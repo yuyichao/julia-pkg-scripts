@@ -108,6 +108,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "$(name)_handle = C_NULL")
+        println(fh, "get_$(name)_path() = $(name)_path")
         if dir == "/usr/lib" || dir == "/usr/local/lib" || dir == "/usr/lib/julia"
             println(fh, "const $(name) = $(repr(file))")
         else
@@ -147,7 +148,7 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         println(fh, "export $(name)")
         println(fh, "const $(name)_path = $(repr(path))")
         println(fh, "const $(name) = $(name)_path")
-        println(fh, "get_$(name)() = $(name)_path")
+        println(fh, "get_$(name)_path() = $(name)_path")
     end
     init_body = String(take!(init_func))
     if !isempty(init_body)
