@@ -150,6 +150,14 @@ open(joinpath(jlpath, "$(pkgname).jl"), "w") do fh
         println(fh, "const $(name) = $(name)_path")
         println(fh, "get_$(name)_path() = $(name)_path")
     end
+    extra = get(global_config, "extra", nothing)
+    if extra !== nothing
+        println(fh, extra)
+    end
+    extra_init = get(global_config, "extra_init", nothing)
+    if extra_init !== nothing
+        println(init_func, extra_init)
+    end
     init_body = String(take!(init_func))
     if !isempty(init_body)
         println(fh, "function __init__()")
